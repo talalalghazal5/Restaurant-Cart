@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/jquery-3.7.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Restaurant Cart</title>
+    <script>
+        $(document).ready(function(){
+            var meal = $("#food-list").val();
+            var size;
+            var amount;
+            var priceForUnit = 0;
+            var totalCost = 0;
+
+            $("#food-list").change(function(){
+                meal = $(this).val();
+                console.log(meal);
+            });
+
+            $("#size-list").change(function(){
+                var selectedOption = $(this).find("option:selected");
+                priceForUnit = selectedOption.data("price"); // (this) for the select or for the option??
+                
+                size = $(this).val();
+                amount = $("#amount").val();
+                totalCost = priceForUnit * amount;
+                $("#ppu").val(priceForUnit);
+                $("#total").val(totalCost);
+            });
+            
+            $("#amount").change(function(){
+                amount = $(this).val();
+                totalCost = priceForUnit * amount;
+                $("#total").val(totalCost);
+                
+            });
+            
+            $("#add").click(function(){
+                event.preventDefault(true);
+                if (priceForUnit === 0 && totalCost === 0) {
+                    alert("Please select the size and amount");
+                }else{
+                    var order = `<tr><td id="mealCell"> ${meal} </td><td id="sizeCell"> ${size} </td><td id="amountCell"> ${amount} </td><td id="unitPriceCell"> ${priceForUnit} </td><td id="totalCostCell"> ${totalCost}</td><td> <a class="me-2 text-black edit-btn"><i class="fa-solid fa-pen-to-square"></i></a> <a class="remove-btn"><i class="fa-solid fa-xmark"></i></a> </td></tr>`
+                    $("tbody").append(order);
+                }
+            });
+            
+            $(document).on("click", function(){
+
+                $(".remove-btn").click(function(){
+                    $(this).parentsUntil("tbody").remove();
+                });
+
+                // this needs help:
+                /*$(".edit-btn").click(function(){
+                    var currentOrder = $(this).parentsUntil("tbody");
+                    var currentMeal = currentOrder.children("#mealCell").text();
+                    var currentSize = currentOrder.children("#sizeCell").text();
+                    var currentAmount = currentOrder.children("#amountCell").text();
+                    var currentUnitPrice = currentOrder.children("#unitPriceCell").text();
+                    var currentTotalCost = currentOrder.children("#totalCostCell").text();
+
+                    $("#food-list").val(currentMeal);
+                    $("#size-list").val(currentSize);
+                    $("#amount").val(parseInt(currentAmount));
+                    $("#ppu").val(currentUnitPrice);
+                    $("#total").val(currentTotalCost);
+                });*/
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container pt-5">
+        <div class="row d-flex justify-content-center mb-5">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+                <form action="">
+                    <div class="row">
+                        <div class="col-6 col-sm-5 mb-3">
+                            <div class="form-group">
+                                <label for="food-list">Select Meal:</label>
+                                <!-- food list -->
+                                <select name="food-list" id="food-list" class="form-control">
+                                    <option value="Shawarma">Shawarma</option>
+                                    <option value="Pizza">Pizza</option>
+                                    <option value="Hamburger">Hamburger</option>
+                                    <option value="Falafel">Falafel</option>
+                                    <option value="Hummus">Hummus</option>
+                                    <option value="Caesar Salad">Caesar Salad</option>
+                                    <option value="Fattoush">Fattoush</option>
+                                    <option value="Tabbouleh">Tabbouleh</option>
+                                    <option value="Cake">Cake</option>
+                                    <option value="Eclaire">Eclaire</option>
+                                    <option value="Kunafeh">Kunafeh</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-4 mb-3">
+                            <div class="form-group">
+                                <label for="size-list">Size:</label>
+                                <!-- size-list -->
+                                <select name="size-list" id="size-list" class="form-control">
+                                    <option data-price="9000" value="Small">Small</option>
+                                    <option data-price="12000" value="Medium">Medium</option>
+                                    <option data-price="18000" value="Large">Large</option>
+                                    <option data-price="30000" value="Family Size">Family Size</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- amount -->
+                        <div class="col-12 col-sm-3 mb-3">
+                            <div class="form-group">
+                                <label for="amount">Amount:</label>
+                                <input type="number" name="amount" id="amount" class="form-control" value="1" min="1">
+                            </div>
+                        </div>
+                        <!-- price for unit -->
+                        <div class="col-12 mb-3">
+                            <div class="form-group">
+                                <label for="ppu">Unit price:</label>
+                                <input type="text" name="ppu" id="ppu" class="form-control text-center" readonly>
+                            </div>
+                        </div>
+                        <!-- total cost -->
+                        <div class="col-12 mb-3">
+                            <div class="form-group">
+                                <label for="total">Total Cost:</label>
+                                <input type="text" name="total" id="total" class="form-control text-center" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <button class="btn btn-rounded text-white text-center bg-primary w-100" id="add">Place order</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- table of orders -->
+        <div class="row"><div class="col-12 table-responsive text-center">
+            <table class="table fs-5">
+                <thead>
+                    <tr>
+                        <th>Meal</th>
+                        <th>Size</th>
+                        <th>Amount</th>
+                        <th>Unit price</th>
+                        <th>Total Cost</th>
+                        <th>options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</body>
+</html>
