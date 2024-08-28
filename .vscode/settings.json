@@ -20,5 +20,5 @@
     },
     "peacock.color": "#f9e64f",
     "editor.cursorBlinking": "smooth",
-    "editor.cursorSmoothCaretAnimation": "explicit"
+    "editor.cursorSmoothCaretAnimation": "explicit",
 }
